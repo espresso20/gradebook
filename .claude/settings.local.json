@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(for file in src/pages/Dashboard.jsx src/pages/CourseView.jsx src/pages/StudentProfile.jsx src/pages/Attendance.jsx src/pages/Settings.jsx)",
+      "Bash(do)",
+      "Bash(\"$file\")",
+      "Bash(done)",
+      "Bash(for file in Attendance.jsx CourseView.jsx Dashboard.jsx StudentProfile.jsx Settings.jsx)",
+      "Bash(for file in pages/*.jsx components/*.jsx)",
+      "Bash(for file in pages/*.jsx)",
+      "Bash(npm run electron:build:*)",
+      "Bash(chmod:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
