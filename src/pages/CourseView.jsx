@@ -20,7 +20,14 @@ export default function CourseView() {
   const [student, setStudent] = useState(null)
   const [editingWeights, setEditingWeights] = useState(false)
   const [weights, setWeights] = useState({})
-  const [newGrade, setNewGrade] = useState({ categoryId: null, score: '', maxScore: '100', notes: '' })
+  const [newGrade, setNewGrade] = useState({
+    categoryId: null,
+    score: '',
+    maxScore: '100',
+    notes: '',
+    date: new Date().toISOString().split('T')[0]
+  })
+  const [editingGrade, setEditingGrade] = useState(null)
   const [showCourseMenu, setShowCourseMenu] = useState(false)
 
   useEffect(() => {
@@ -43,16 +50,46 @@ export default function CourseView() {
 
   const handleAddGrade = (categoryId) => {
     if (!newGrade.score) return
-    
+
     db.addGrade({
       category_id: categoryId,
-      date: new Date().toISOString().split('T')[0],
+      date: newGrade.date || new Date().toISOString().split('T')[0],
       score: parseFloat(newGrade.score),
       max_score: parseFloat(newGrade.maxScore) || 100,
       notes: newGrade.notes,
     })
-    
-    setNewGrade({ categoryId: null, score: '', maxScore: '100', notes: '' })
+
+    setNewGrade({
+      categoryId: null,
+      score: '',
+      maxScore: '100',
+      notes: '',
+      date: new Date().toISOString().split('T')[0]
+    })
+    loadData()
+  }
+
+  const handleEditGrade = (grade) => {
+    setEditingGrade({
+      id: grade.id,
+      score: grade.score.toString(),
+      maxScore: grade.max_score.toString(),
+      notes: grade.notes || '',
+      date: grade.date
+    })
+  }
+
+  const handleUpdateGrade = () => {
+    if (!editingGrade.score) return
+
+    db.updateGrade(editingGrade.id, {
+      score: parseFloat(editingGrade.score),
+      max_score: parseFloat(editingGrade.maxScore) || 100,
+      notes: editingGrade.notes,
+      date: editingGrade.date
+    })
+
+    setEditingGrade(null)
     loadData()
   }
 
@@ -273,8 +310,12 @@ export default function CourseView() {
             category={category}
             onAddGrade={handleAddGrade}
             onDeleteGrade={handleDeleteGrade}
+            onEditGrade={handleEditGrade}
+            onUpdateGrade={handleUpdateGrade}
             newGrade={newGrade}
             setNewGrade={setNewGrade}
+            editingGrade={editingGrade}
+            setEditingGrade={setEditingGrade}
           />
         ))}
       </div>
@@ -282,7 +323,17 @@ export default function CourseView() {
   )
 }
 
-function CategorySection({ category, onAddGrade, onDeleteGrade, newGrade, setNewGrade }) {
+function CategorySection({
+  category,
+  onAddGrade,
+  onDeleteGrade,
+  onEditGrade,
+  onUpdateGrade,
+  newGrade,
+  setNewGrade,
+  editingGrade,
+  setEditingGrade
+}) {
   const isAddingToThis = newGrade.categoryId === category.id
   
   return (
@@ -300,7 +351,13 @@ function CategorySection({ category, onAddGrade, onDeleteGrade, newGrade, setNew
         
         {!isAddingToThis && (
           <button
-            onClick={() => setNewGrade({ categoryId: category.id, score: '', maxScore: '100', notes: '' })}
+            onClick={() => setNewGrade({
+              categoryId: category.id,
+              score: '',
+              maxScore: '100',
+              notes: '',
+              date: new Date().toISOString().split('T')[0]
+            })}
             className="btn-ghost text-sm flex items-center gap-1"
           >
             <Plus className="w-4 h-4" />
@@ -335,6 +392,15 @@ function CategorySection({ category, onAddGrade, onDeleteGrade, newGrade, setNew
                 placeholder="100"
               />
             </div>
+            <div>
+              <label className="text-xs text-warmgray-500 dark:text-gray-400">Date</label>
+              <input
+                type="date"
+                value={newGrade.date}
+                onChange={(e) => setNewGrade(prev => ({ ...prev, date: e.target.value }))}
+                className="w-36 px-3 py-2 border border-warmgray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-warmgray-800 dark:text-gray-100 rounded-lg text-sm"
+              />
+            </div>
             <div className="flex-1 min-w-[150px]">
               <label className="text-xs text-warmgray-500 dark:text-gray-400">Notes (optional)</label>
               <input
@@ -347,7 +413,13 @@ function CategorySection({ category, onAddGrade, onDeleteGrade, newGrade, setNew
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setNewGrade({ categoryId: null, score: '', maxScore: '100', notes: '' })}
+                onClick={() => setNewGrade({
+                  categoryId: null,
+                  score: '',
+                  maxScore: '100',
+                  notes: '',
+                  date: new Date().toISOString().split('T')[0]
+                })}
                 className="p-2 text-warmgray-400 dark:text-gray-500 hover:text-warmgray-600 dark:text-gray-300 transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -367,33 +439,105 @@ function CategorySection({ category, onAddGrade, onDeleteGrade, newGrade, setNew
       {/* Grades list */}
       {category.grades?.length > 0 ? (
         <div className="space-y-2">
-          {category.grades.map(grade => (
-            <div 
-              key={grade.id}
-              className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-warmgray-50 dark:hover:bg-gray-700 dark:bg-gray-700 group"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-warmgray-500 dark:text-gray-400 w-24">
-                  {new Date(grade.date).toLocaleDateString()}
-                </span>
-                <span className="font-medium text-warmgray-800 dark:text-gray-100">
-                  {grade.score} / {grade.max_score}
-                </span>
-                <span className="text-sm text-warmgray-500 dark:text-gray-400">
-                  ({((grade.score / grade.max_score) * 100).toFixed(1)}%)
-                </span>
-                {grade.notes && (
-                  <span className="text-sm text-warmgray-400 dark:text-gray-500">— {grade.notes}</span>
-                )}
+          {category.grades.map(grade => {
+            const isEditing = editingGrade?.id === grade.id
+
+            return isEditing ? (
+              // Edit mode
+              <div key={grade.id} className="bg-cream-50 dark:bg-gray-700 rounded-xl p-4">
+                <div className="flex flex-wrap items-end gap-3">
+                  <div>
+                    <label className="text-xs text-warmgray-500 dark:text-gray-400">Score</label>
+                    <input
+                      type="number"
+                      value={editingGrade.score}
+                      onChange={(e) => setEditingGrade(prev => ({ ...prev, score: e.target.value }))}
+                      className="w-20 px-3 py-2 border border-warmgray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-warmgray-800 dark:text-gray-100 rounded-lg text-sm"
+                      autoFocus
+                    />
+                  </div>
+                  <span className="text-warmgray-400 dark:text-gray-500 pb-2">/</span>
+                  <div>
+                    <label className="text-xs text-warmgray-500 dark:text-gray-400">Max</label>
+                    <input
+                      type="number"
+                      value={editingGrade.maxScore}
+                      onChange={(e) => setEditingGrade(prev => ({ ...prev, maxScore: e.target.value }))}
+                      className="w-20 px-3 py-2 border border-warmgray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-warmgray-800 dark:text-gray-100 rounded-lg text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-warmgray-500 dark:text-gray-400">Date</label>
+                    <input
+                      type="date"
+                      value={editingGrade.date}
+                      onChange={(e) => setEditingGrade(prev => ({ ...prev, date: e.target.value }))}
+                      className="w-36 px-3 py-2 border border-warmgray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-warmgray-800 dark:text-gray-100 rounded-lg text-sm"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-[150px]">
+                    <label className="text-xs text-warmgray-500 dark:text-gray-400">Notes</label>
+                    <input
+                      type="text"
+                      value={editingGrade.notes}
+                      onChange={(e) => setEditingGrade(prev => ({ ...prev, notes: e.target.value }))}
+                      className="w-full px-3 py-2 border border-warmgray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-warmgray-800 dark:text-gray-100 rounded-lg text-sm"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setEditingGrade(null)}
+                      className="p-2 text-warmgray-400 dark:text-gray-500 hover:text-warmgray-600 dark:text-gray-300 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={onUpdateGrade}
+                      className="btn-primary py-2 px-4"
+                      disabled={!editingGrade.score}
+                    >
+                      <Check className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <button
-                onClick={() => onDeleteGrade(grade.id)}
-                className="p-1 text-warmgray-300 dark:text-gray-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+            ) : (
+              // Display mode
+              <div
+                key={grade.id}
+                className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-warmgray-50 dark:hover:bg-gray-700 group"
               >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-warmgray-500 dark:text-gray-400 w-24">
+                    {new Date(grade.date).toLocaleDateString()}
+                  </span>
+                  <span className="font-medium text-warmgray-800 dark:text-gray-100">
+                    {grade.score} / {grade.max_score}
+                  </span>
+                  <span className="text-sm text-warmgray-500 dark:text-gray-400">
+                    ({((grade.score / grade.max_score) * 100).toFixed(1)}%)
+                  </span>
+                  {grade.notes && (
+                    <span className="text-sm text-warmgray-400 dark:text-gray-500">— {grade.notes}</span>
+                  )}
+                </div>
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => onEditGrade(grade)}
+                    className="p-1 text-warmgray-400 dark:text-gray-500 hover:text-terracotta-500 transition-colors"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onDeleteGrade(grade.id)}
+                    className="p-1 text-warmgray-400 dark:text-gray-500 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )
+          })}
         </div>
       ) : (
         <p className="text-sm text-warmgray-400 dark:text-gray-500 text-center py-4">
