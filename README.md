@@ -17,6 +17,8 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 
 ### 📊 Grade Tracking
 - **Individual Assignments**: Record scores for individual assignments within categories
+- **Custom Date Entry**: Override grade dates for historical data entry
+- **Edit Grades**: Full editing capability for all grade fields (score, max, date, notes)
 - **Automatic Calculation**: Grades are calculated automatically using weighted averages
 - **GPA Calculation**: Cumulative GPA calculated based on course letter grades and credits
 - **Letter Grade Assignment**: Automatic letter grade assignment based on percentage thresholds
@@ -40,6 +42,14 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 - **Responsive Layout**: Works beautifully on all screen sizes
 - **Smooth Animations**: Subtle transitions and hover effects
 - **Custom Typography**: Clean, readable fonts optimized for educational content
+
+### 📄 Reports & Printing
+- **Professional Report Cards**: Generate beautiful, print-ready grade reports
+- **School Year Selection**: Create reports for any school year
+- **Student Selection**: Generate reports for individual students
+- **Complete Academic Summary**: Includes GPA, credits earned, course grades, and attendance
+- **Print Optimized**: Clean layout optimized for printing
+- **PDF Export**: Export reports to PDF via print dialog
 
 ### 💾 Data Management
 - **Export/Import**: Backup and restore all your data as JSON files
@@ -154,6 +164,7 @@ Deploy the `dist/` folder to:
 4. **Record Grades**
    - Click "Add Grade" in any category
    - Enter score and maximum points
+   - Override date for historical data (defaults to today)
    - Add optional notes
 
 5. **Track Attendance**
@@ -161,7 +172,26 @@ Deploy the `dist/` folder to:
    - Click dates to mark Present/Absent
    - View monthly statistics
 
+6. **Generate Reports**
+   - Navigate to Reports section
+   - Select student and school year
+   - Click "Generate Report"
+   - Print or export to PDF
+
 ### Advanced Features
+
+#### Edit Course Details
+1. Open the course
+2. Click the three-dot menu (⋮) → "Edit Course"
+3. Modify course name, credits, description, or color
+4. Click "Save Changes"
+
+#### Edit Existing Grades
+1. Open a course
+2. Hover over any grade
+3. Click the pencil icon to edit
+4. Modify score, max score, date, or notes
+5. Click the checkmark to save or X to cancel
 
 #### Delete Student or Course
 - **Delete Student**: Click the three-dot menu (⋮) in the student profile header → "Delete Student"
@@ -205,11 +235,14 @@ gradebook-app/
 │   ├── components/          # Reusable React components
 │   │   ├── AddCourseModal.jsx
 │   │   ├── AddStudentModal.jsx
-│   │   └── Layout.jsx
+│   │   ├── Layout.jsx
+│   │   └── Sidebar.jsx
 │   ├── pages/              # Main application pages
 │   │   ├── Attendance.jsx
 │   │   ├── CourseView.jsx
 │   │   ├── Dashboard.jsx
+│   │   ├── Help.jsx
+│   │   ├── Reports.jsx
 │   │   ├── Settings.jsx
 │   │   ├── StudentProfile.jsx
 │   │   └── Welcome.jsx
@@ -350,8 +383,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Future enhancements being considered:
 
-- [ ] PDF transcript generation
-- [ ] Custom report cards
+- [x] ~~PDF transcript generation~~ (Report cards with PDF export)
+- [x] ~~Custom report cards~~ (Professional report cards)
+- [x] ~~Print-friendly views~~ (Optimized report printing)
+- [x] ~~Edit grades~~ (Full grade editing capability)
+- [x] ~~Edit courses~~ (Edit course name, credits, description, color)
+- [x] ~~Historical data entry~~ (Custom date override for grades)
 - [ ] Assignment due date reminders
 - [ ] Multiple grading periods per year
 - [ ] Cloud sync option (optional)
@@ -360,7 +397,6 @@ Future enhancements being considered:
 - [ ] Grade charts and visualizations
 - [ ] Parent/teacher role separation
 - [ ] Curriculum planning integration
-- [ ] Print-friendly views
 - [ ] Assignment templates
 - [ ] Bulk grade entry
 

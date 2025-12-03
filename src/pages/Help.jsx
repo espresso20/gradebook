@@ -14,7 +14,8 @@ import {
   Trash2,
   Plus,
   ChevronRight,
-  ChevronDown
+  ChevronDown,
+  Printer
 } from 'lucide-react'
 
 export default function Help() {
@@ -141,10 +142,12 @@ export default function Help() {
                 <li>Choose a category (Daily, Quiz, or Test)</li>
                 <li>Click "Add Grade"</li>
                 <li>Enter the score earned and maximum points possible</li>
+                <li>Override the date if entering historical data (defaults to today)</li>
                 <li>Add optional notes</li>
-                <li>Click "Save"</li>
+                <li>Click the checkmark to save</li>
               </ol>
               <p className="mt-2"><strong>Example:</strong> Score: 85, Max Points: 100 = 85%</p>
+              <p className="mt-2"><strong>Custom Dates:</strong> When entering past assignments, use the date picker to set the correct date. This is helpful when catching up on grade entry.</p>
             </HelpItem>
 
             <HelpItem title="How Grades are Calculated">
@@ -158,13 +161,37 @@ export default function Help() {
               </ol>
             </HelpItem>
 
-            <HelpItem title="Editing or Deleting Grades">
-              <p>From the course view:</p>
+            <HelpItem title="Editing Grades">
+              <p>You can edit any grade after it's been saved:</p>
+              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                <li>Open the course containing the grade</li>
+                <li>Hover over the grade you want to edit</li>
+                <li>Click the pencil icon that appears</li>
+                <li>Modify the score, max score, date, or notes</li>
+                <li>Click the checkmark to save or X to cancel</li>
+              </ol>
+              <p className="mt-2"><strong>Tip:</strong> This is helpful for correcting data entry mistakes or updating scores after reviewing work.</p>
+            </HelpItem>
+
+            <HelpItem title="Deleting Grades">
+              <p>To remove a grade:</p>
               <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li>Click the three-dot menu (⋮) next to any grade</li>
-                <li>Select "Edit" to modify score or notes</li>
-                <li>Select "Delete" to remove the grade</li>
+                <li>Hover over the grade in the course view</li>
+                <li>Click the trash icon that appears</li>
+                <li>Confirm the deletion</li>
               </ul>
+            </HelpItem>
+
+            <HelpItem title="Editing a Course">
+              <p>You can modify course details after creation:</p>
+              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                <li>Open the course</li>
+                <li>Click the three-dot menu (⋮) in the top right</li>
+                <li>Select "Edit Course"</li>
+                <li>Modify the course name, credits, description, or color</li>
+                <li>Click "Save Changes"</li>
+              </ol>
+              <p className="mt-2"><strong>Example uses:</strong> Fix typos in course names, adjust credit hours, change course colors, or add descriptions.</p>
             </HelpItem>
 
             <HelpItem title="Deleting a Course">
@@ -172,7 +199,7 @@ export default function Help() {
               <ul className="list-disc pl-5 mt-2 space-y-1">
                 <li>Click the three-dot menu (⋮) in the top right</li>
                 <li>Select "Delete Course"</li>
-                <li>Confirm - this permanently deletes all grades in the course</li>
+                <li>Confirm - this permanently deletes all grades and categories in the course</li>
               </ul>
             </HelpItem>
           </div>
@@ -329,6 +356,73 @@ export default function Help() {
                 <li>Changes save automatically</li>
                 <li>All courses will recalculate with the new scale</li>
               </ol>
+            </HelpItem>
+          </div>
+        </HelpSection>
+
+        {/* Reports */}
+        <HelpSection
+          id="reports"
+          title="Reports & Printing"
+          icon={<Printer className="w-5 h-5" />}
+          isOpen={openSection === 'reports'}
+          onToggle={() => toggleSection('reports')}
+        >
+          <div className="space-y-4">
+            <HelpItem title="Generating Report Cards">
+              <p>Create professional, print-ready grade reports:</p>
+              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                <li>Click "Reports" in the sidebar</li>
+                <li>Select a student from the dropdown</li>
+                <li>Select a school year</li>
+                <li>Click "Generate Report"</li>
+              </ol>
+              <p className="mt-2">The report will display with all course grades, GPA, attendance, and more.</p>
+            </HelpItem>
+
+            <HelpItem title="What's Included in Reports">
+              <p>Each report card includes:</p>
+              <ul className="list-disc pl-5 mt-2 space-y-1">
+                <li><strong>Student Information:</strong> Name, grade level, school year, report date</li>
+                <li><strong>Academic Summary:</strong> Cumulative GPA, credits earned, credits attempted</li>
+                <li><strong>Course Grades:</strong> Complete table with course names, credits, percentage, letter grade, and GPA points</li>
+                <li><strong>Attendance Summary:</strong> Days present, days absent, attendance rate</li>
+                <li><strong>Grading Scale Reference:</strong> Shows your current grading scale for context</li>
+              </ul>
+            </HelpItem>
+
+            <HelpItem title="Printing Reports">
+              <p>To print a report card:</p>
+              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                <li>Generate the report as described above</li>
+                <li>Click the "Print" button at the top</li>
+                <li>Your browser's print dialog will open</li>
+                <li>Adjust print settings if needed</li>
+                <li>Click Print to send to your printer</li>
+              </ol>
+              <p className="mt-2">The report is automatically formatted for 8.5" × 11" (letter) paper with proper margins.</p>
+            </HelpItem>
+
+            <HelpItem title="Exporting to PDF">
+              <p>To save a report as a PDF file:</p>
+              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                <li>Generate the report</li>
+                <li>Click the "Export PDF" button (or use the Print button)</li>
+                <li>In the print dialog, select "Save as PDF" as your printer</li>
+                <li>Choose a location and filename</li>
+                <li>Click Save</li>
+              </ol>
+              <p className="mt-2"><strong>Tip:</strong> PDF reports are great for sharing with administrators, keeping digital records, or submitting to umbrella schools.</p>
+            </HelpItem>
+
+            <HelpItem title="Multiple Reports">
+              <p>Generate reports for different scenarios:</p>
+              <ul className="list-disc pl-5 mt-2 space-y-1">
+                <li><strong>Mid-year progress:</strong> Generate reports during the school year</li>
+                <li><strong>Final transcripts:</strong> Generate at year end with complete grades</li>
+                <li><strong>Multiple students:</strong> Generate separate reports for each child</li>
+                <li><strong>Historical records:</strong> Generate reports for previous school years</li>
+              </ul>
             </HelpItem>
           </div>
         </HelpSection>
@@ -490,6 +584,8 @@ export default function Help() {
               <ul className="list-disc pl-5 mt-2 space-y-1">
                 <li>Enter grades regularly to keep calculations accurate</li>
                 <li>Use the notes field to remember what each assignment was</li>
+                <li>Override dates when entering historical data or past assignments</li>
+                <li>Don't worry about mistakes - you can always edit grades later by clicking the pencil icon</li>
                 <li>Adjust category weights at the start of each course</li>
                 <li>Review calculated grades to ensure they match your expectations</li>
               </ul>
@@ -518,6 +614,7 @@ export default function Help() {
               <p>When completing a school year:</p>
               <ol className="list-decimal pl-5 mt-2 space-y-1">
                 <li>Export your data as a final backup</li>
+                <li>Generate and save final report cards for each student (Reports → Generate → Export PDF)</li>
                 <li>Review all GPAs and transcripts</li>
                 <li>Create a new school year for the upcoming year</li>
                 <li>Set the new year as active</li>

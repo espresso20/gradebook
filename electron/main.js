@@ -1,5 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const path = require('path')
+import { app, BrowserWindow, ipcMain } from 'electron'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 let mainWindow
 
@@ -12,7 +16,7 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
     },
     titleBarStyle: 'hiddenInset', // Nice macOS style
     backgroundColor: '#FFFDF7', // Match our cream-50 color

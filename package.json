@@ -2,6 +2,7 @@
   "name": "gradebook-app",
   "version": "1.0.0",
   "description": "A warm and approachable gradebook for homeschool families",
+  "type": "module",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
