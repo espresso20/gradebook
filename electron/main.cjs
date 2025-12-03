@@ -1,13 +1,9 @@
-import { app, BrowserWindow } from 'electron'
-import path from 'path'
-import { fileURLToPath } from 'url'
+const { app, BrowserWindow, ipcMain } = require('electron')
+const path = require('path')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+let mainWindow = null
 
-let mainWindow
-
-const createWindow = () => {
+function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -18,9 +14,9 @@ const createWindow = () => {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.cjs'),
     },
-    titleBarStyle: 'hiddenInset', // Nice macOS style
-    backgroundColor: '#FFFDF7', // Match our cream-50 color
-    show: false, // Don't show until ready
+    titleBarStyle: 'hiddenInset',
+    backgroundColor: '#FFFDF7',
+    show: false,
   })
 
   // Load the app
@@ -33,26 +29,19 @@ const createWindow = () => {
 
   // Intercept navigation to handle SPA routing
   mainWindow.webContents.on('will-navigate', (event, url) => {
-    // Allow navigation in dev mode
-    if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
-      return
-    }
-
-    // In production, prevent navigation to file:// URLs (SPA routing issue)
+    if (process.env.NODE_ENV === 'development' || !app.isPackaged) return
     if (url.startsWith('file://')) {
       event.preventDefault()
       mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
     }
   })
 
-  // Handle reload - always load index.html in production
   mainWindow.webContents.on('did-fail-load', () => {
     if (!(process.env.NODE_ENV === 'development' || !app.isPackaged)) {
       mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
     }
   })
 
-  // Show window when ready to prevent visual flash
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
@@ -67,7 +56,6 @@ app.whenReady().then(() => {
   createWindow()
 
   app.on('activate', () => {
-    // On macOS, re-create window when dock icon is clicked
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
     }
@@ -80,6 +68,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// Future: Add IPC handlers for native file operations, database, etc.
-// ipcMain.handle('export-pdf', async (event, data) => { ... })

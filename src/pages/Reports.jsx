@@ -141,8 +141,6 @@ function ReportCard({ studentId, schoolYearId }) {
   const schoolYear = db.getSchoolYears().find(y => y.id === schoolYearId)
   const summary = db.getStudentSummary(studentId, schoolYearId)
 
-  console.log('Report Debug:', { student, schoolYear, summary })
-
   if (!student || !schoolYear) {
     return (
       <div className="p-8 text-center text-warmgray-600">

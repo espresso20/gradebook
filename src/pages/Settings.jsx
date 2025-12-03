@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Download, Upload, Trash2, AlertTriangle, Plus, Edit2, Moon, Sun } from 'lucide-react'
 import db from '../lib/store'
+import { VERSION } from '../version'
 
 export default function Settings({ onUpdate, darkMode, toggleDarkMode }) {
   const [gradingScale, setGradingScale] = useState(db.getGradingScale())
@@ -509,6 +510,12 @@ export default function Settings({ onUpdate, darkMode, toggleDarkMode }) {
           </div>
         </div>
       )}
+
+      {/* App Version */}
+      <div className="mt-8 text-center text-sm text-warmgray-500 dark:text-gray-400">
+        <p>Family Gradebook v{VERSION}</p>
+        <p className="text-xs mt-1">Made with ❤️ for homeschool families</p>
+      </div>
     </div>
   )
 }

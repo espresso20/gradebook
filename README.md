@@ -95,8 +95,15 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 **Quick Build:**
 
 ```bash
-# Using the build script (recommended)
+# Using the build script (recommended) - auto-increments patch version
 ./build.sh
+
+# Build without version increment
+./build.sh --no-version
+
+# Build with specific version increment
+./build.sh --minor   # Increments minor version (1.0.0 -> 1.1.0)
+./build.sh --major   # Increments major version (1.0.0 -> 2.0.0)
 
 # Or using npm
 npm run electron:build
