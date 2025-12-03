@@ -14,7 +14,10 @@
       "Bash(brew install:*)",
       "Bash(qlmanage:*)",
       "Bash(./scripts/generate-icon.sh:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh run list:*)"
     ],
     "deny": [],
     "ask": []
