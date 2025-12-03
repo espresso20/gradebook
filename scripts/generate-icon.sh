@@ -7,31 +7,14 @@ set -e
 
 echo "🎨 Generating macOS app icon..."
 
-# Check if ImageMagick is installed
-if ! command -v magick &> /dev/null; then
-    echo "❌ ImageMagick not found. Installing via Homebrew..."
-    if command -v brew &> /dev/null; then
-        brew install imagemagick
-    else
-        echo "❌ Homebrew not installed. Please install ImageMagick manually:"
-        echo "   https://imagemagick.org/script/download.php"
-        exit 1
-    fi
-fi
-
 # Check if source PNG exists
 if [ ! -f "build/icon.png" ]; then
     echo "❌ Source icon not found at build/icon.png"
     echo ""
-    echo "Please create a 1024x1024 PNG icon first:"
-    echo "  1. Design your icon (graduation cap on terracotta background)"
-    echo "  2. Export as PNG: build/icon.png"
-    echo "  3. Run this script again"
-    echo ""
-    echo "Or convert the SVG to PNG:"
-    echo "  - Upload build/icon.svg to https://cloudconvert.com/svg-to-png"
-    echo "  - Set size to 1024x1024"
-    echo "  - Download as build/icon.png"
+    echo "The icon.png should have been generated from icon.svg"
+    echo "If it's missing, run:"
+    echo "  qlmanage -t -s 1024 -o build/ build/icon.svg"
+    echo "  mv build/icon.svg.png build/icon.png"
     exit 1
 fi
 
@@ -42,19 +25,19 @@ ICONSET_DIR="FamilyGradebook.iconset"
 rm -rf "$ICONSET_DIR"
 mkdir "$ICONSET_DIR"
 
-echo "📐 Generating icon sizes..."
+echo "📐 Generating icon sizes using sips..."
 
-# Generate all required icon sizes
-magick build/icon.png -resize 16x16 "$ICONSET_DIR/icon_16x16.png"
-magick build/icon.png -resize 32x32 "$ICONSET_DIR/icon_16x16@2x.png"
-magick build/icon.png -resize 32x32 "$ICONSET_DIR/icon_32x32.png"
-magick build/icon.png -resize 64x64 "$ICONSET_DIR/icon_32x32@2x.png"
-magick build/icon.png -resize 128x128 "$ICONSET_DIR/icon_128x128.png"
-magick build/icon.png -resize 256x256 "$ICONSET_DIR/icon_128x128@2x.png"
-magick build/icon.png -resize 256x256 "$ICONSET_DIR/icon_256x256.png"
-magick build/icon.png -resize 512x512 "$ICONSET_DIR/icon_256x256@2x.png"
-magick build/icon.png -resize 512x512 "$ICONSET_DIR/icon_512x512.png"
-magick build/icon.png -resize 1024x1024 "$ICONSET_DIR/icon_512x512@2x.png"
+# Generate all required icon sizes using macOS built-in sips
+sips -z 16 16 build/icon.png --out "$ICONSET_DIR/icon_16x16.png" > /dev/null 2>&1
+sips -z 32 32 build/icon.png --out "$ICONSET_DIR/icon_16x16@2x.png" > /dev/null 2>&1
+sips -z 32 32 build/icon.png --out "$ICONSET_DIR/icon_32x32.png" > /dev/null 2>&1
+sips -z 64 64 build/icon.png --out "$ICONSET_DIR/icon_32x32@2x.png" > /dev/null 2>&1
+sips -z 128 128 build/icon.png --out "$ICONSET_DIR/icon_128x128.png" > /dev/null 2>&1
+sips -z 256 256 build/icon.png --out "$ICONSET_DIR/icon_128x128@2x.png" > /dev/null 2>&1
+sips -z 256 256 build/icon.png --out "$ICONSET_DIR/icon_256x256.png" > /dev/null 2>&1
+sips -z 512 512 build/icon.png --out "$ICONSET_DIR/icon_256x256@2x.png" > /dev/null 2>&1
+sips -z 512 512 build/icon.png --out "$ICONSET_DIR/icon_512x512.png" > /dev/null 2>&1
+sips -z 1024 1024 build/icon.png --out "$ICONSET_DIR/icon_512x512@2x.png" > /dev/null 2>&1
 
 echo "✓ Generated all icon sizes"
 

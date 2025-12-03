@@ -434,14 +434,14 @@ export const db = {
   getStudentSummary: (studentId, schoolYearId) => {
     const student = store.students.find(s => s.id === studentId);
     if (!student) return null;
-    
+
     const courses = store.courses
       .filter(c => c.student_id === studentId && c.school_year_id === schoolYearId)
       .map(course => db.getCourseWithGrade(course.id));
-    
+
     const validCourses = courses.filter(c => c.grade !== null);
     let gpa = null;
-    
+
     if (validCourses.length > 0) {
       const totalCredits = validCourses.reduce((sum, c) => sum + c.credits, 0);
       const weightedSum = validCourses.reduce((sum, c) => {
@@ -450,9 +450,9 @@ export const db = {
       }, 0);
       gpa = totalCredits > 0 ? weightedSum / totalCredits : null;
     }
-    
+
     const attendance = db.getAttendanceStats(studentId, schoolYearId);
-    
+
     return {
       ...student,
       courses,
@@ -460,7 +460,29 @@ export const db = {
       attendance,
     };
   },
-  
+
+  // Calculate student GPA for current active year
+  calculateStudentGPA: (studentId) => {
+    const activeYear = store.schoolYears.find(y => y.is_active);
+    if (!activeYear) return 0;
+
+    const courses = store.courses
+      .filter(c => c.student_id === studentId && c.school_year_id === activeYear.id)
+      .map(course => db.getCourseWithGrade(course.id));
+
+    const validCourses = courses.filter(c => c.grade !== null && c.letterGrade);
+
+    if (validCourses.length === 0) return 0;
+
+    const totalCredits = validCourses.reduce((sum, c) => sum + c.credits, 0);
+    const weightedSum = validCourses.reduce((sum, c) => {
+      const gradeInfo = store.gradingScale.find(g => g.letter_grade === c.letterGrade);
+      return sum + (gradeInfo ? gradeInfo.gpa_points * c.credits : 0);
+    }, 0);
+
+    return totalCredits > 0 ? weightedSum / totalCredits : 0;
+  },
+
   // Export all data (for backup)
   exportData: () => JSON.stringify(store, null, 2),
   

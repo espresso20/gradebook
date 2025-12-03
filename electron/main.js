@@ -27,6 +27,27 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
   }
 
+  // Intercept navigation to handle SPA routing
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    // Allow navigation in dev mode
+    if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
+      return
+    }
+
+    // In production, prevent navigation to file:// URLs (SPA routing issue)
+    if (url.startsWith('file://')) {
+      event.preventDefault()
+      mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
+    }
+  })
+
+  // Handle reload - always load index.html in production
+  mainWindow.webContents.on('did-fail-load', () => {
+    if (!(process.env.NODE_ENV === 'development' || !app.isPackaged)) {
+      mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
+    }
+  })
+
   // Show window when ready to prevent visual flash
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

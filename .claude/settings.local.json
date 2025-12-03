@@ -10,7 +10,11 @@
       "Bash(for file in pages/*.jsx components/*.jsx)",
       "Bash(for file in pages/*.jsx)",
       "Bash(npm run electron:build:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(brew install:*)",
+      "Bash(qlmanage:*)",
+      "Bash(./scripts/generate-icon.sh:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Download, Upload, Trash2, AlertTriangle, Plus, Edit2 } from 'lucide-react'
+import { Download, Upload, Trash2, AlertTriangle, Plus, Edit2, Moon, Sun } from 'lucide-react'
 import db from '../lib/store'
 
-export default function Settings({ onUpdate }) {
+export default function Settings({ onUpdate, darkMode, toggleDarkMode }) {
   const [gradingScale, setGradingScale] = useState(db.getGradingScale())
   const [isSimpleScale, setIsSimpleScale] = useState(db.isSimpleGradingScale())
   const [schoolYears, setSchoolYears] = useState(db.getSchoolYears())
@@ -107,6 +107,38 @@ export default function Settings({ onUpdate }) {
       <h1 className="font-display text-2xl font-bold text-warmgray-800 dark:text-gray-100 mb-8">
         Settings
       </h1>
+
+      {/* Appearance */}
+      <section className="card mb-6">
+        <h2 className="font-display text-lg font-semibold text-warmgray-800 dark:text-gray-100 mb-4">
+          Appearance
+        </h2>
+
+        <div className="flex items-center justify-between p-4 bg-warmgray-50 dark:bg-gray-700 rounded-xl">
+          <div>
+            <div className="font-medium text-warmgray-800 dark:text-gray-100">Theme</div>
+            <div className="text-sm text-warmgray-500 dark:text-gray-400">
+              {darkMode ? 'Dark mode is enabled' : 'Light mode is enabled'}
+            </div>
+          </div>
+          <button
+            onClick={toggleDarkMode}
+            className="btn-secondary flex items-center gap-2"
+          >
+            {darkMode ? (
+              <>
+                <Sun className="w-4 h-4" />
+                Light Mode
+              </>
+            ) : (
+              <>
+                <Moon className="w-4 h-4" />
+                Dark Mode
+              </>
+            )}
+          </button>
+        </div>
+      </section>
 
       {/* Grading Scale */}
       <section className="card mb-6">

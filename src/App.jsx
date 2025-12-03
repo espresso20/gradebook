@@ -8,9 +8,11 @@ import StudentProfile from './pages/StudentProfile'
 import CourseView from './pages/CourseView'
 import Attendance from './pages/Attendance'
 import Settings from './pages/Settings'
+import Help from './pages/Help'
 
 function App() {
   const [students, setStudents] = useState([])
+  const [schoolYears, setSchoolYears] = useState([])
   const [loading, setLoading] = useState(true)
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode')
@@ -19,9 +21,7 @@ function App() {
 
   useEffect(() => {
     // Load initial data
-    const loadedStudents = db.getStudents()
-    setStudents(loadedStudents)
-    setLoading(false)
+    loadData()
   }, [])
 
   useEffect(() => {
@@ -34,8 +34,10 @@ function App() {
     localStorage.setItem('darkMode', darkMode)
   }, [darkMode])
 
-  const refreshStudents = () => {
+  const loadData = () => {
     setStudents(db.getStudents())
+    setSchoolYears(db.getSchoolYears())
+    setLoading(false)
   }
 
   const toggleDarkMode = () => {
@@ -50,32 +52,46 @@ function App() {
     )
   }
 
-  // If no students, show welcome/onboarding
-  if (students.length === 0) {
-    return <Welcome onStudentAdded={refreshStudents} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-  }
+  const activeYear = schoolYears.find(y => y.is_active)
 
   return (
-    <Layout students={students} onStudentsChange={refreshStudents} darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+    <Layout
+      students={students}
+      schoolYears={schoolYears}
+      activeYear={activeYear}
+      onUpdate={loadData}
+    >
       <Routes>
-        <Route path="/" element={<Dashboard students={students} />} />
-        <Route
-          path="/student/:studentId"
-          element={<StudentProfile onUpdate={refreshStudents} />}
-        />
-        <Route
-          path="/student/:studentId/course/:courseId"
-          element={<CourseView />}
-        />
-        <Route
-          path="/student/:studentId/attendance"
-          element={<Attendance />}
-        />
-        <Route
-          path="/settings"
-          element={<Settings onUpdate={refreshStudents} />}
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {students.length === 0 ? (
+          <>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/settings" element={<Settings onUpdate={loadData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<Dashboard students={students} />} />
+            <Route
+              path="/student/:studentId"
+              element={<StudentProfile onUpdate={loadData} />}
+            />
+            <Route
+              path="/student/:studentId/course/:courseId"
+              element={<CourseView />}
+            />
+            <Route
+              path="/student/:studentId/attendance"
+              element={<Attendance />}
+            />
+            <Route
+              path="/settings"
+              element={<Settings onUpdate={loadData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+            />
+            <Route path="/help" element={<Help />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        )}
       </Routes>
     </Layout>
   )
