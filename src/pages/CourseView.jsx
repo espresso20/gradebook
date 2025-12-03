@@ -29,6 +29,13 @@ export default function CourseView() {
   })
   const [editingGrade, setEditingGrade] = useState(null)
   const [showCourseMenu, setShowCourseMenu] = useState(false)
+  const [editingCourse, setEditingCourse] = useState(false)
+  const [courseEdit, setCourseEdit] = useState({
+    name: '',
+    credits: '',
+    description: '',
+    color: ''
+  })
 
   useEffect(() => {
     loadData()
@@ -126,6 +133,41 @@ export default function CourseView() {
     }
   }
 
+  const handleEditCourse = () => {
+    setCourseEdit({
+      name: course.name,
+      credits: course.credits.toString(),
+      description: course.description || '',
+      color: course.color || '#6B8A62'
+    })
+    setEditingCourse(true)
+    setShowCourseMenu(false)
+  }
+
+  const handleUpdateCourse = () => {
+    if (!courseEdit.name || !courseEdit.credits) return
+
+    db.updateCourse(parseInt(courseId), {
+      name: courseEdit.name,
+      credits: parseFloat(courseEdit.credits),
+      description: courseEdit.description,
+      color: courseEdit.color
+    })
+
+    setEditingCourse(false)
+    loadData()
+  }
+
+  const handleCancelEditCourse = () => {
+    setEditingCourse(false)
+    setCourseEdit({
+      name: '',
+      credits: '',
+      description: '',
+      color: ''
+    })
+  }
+
   if (!course || !student) {
     return (
       <div className="p-8 text-center text-warmgray-500 dark:text-gray-400">
@@ -146,25 +188,93 @@ export default function CourseView() {
           Back to {student.first_name}'s Profile
         </Link>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div
-              className="w-3 h-12 rounded-full"
-              style={{ backgroundColor: course.color || '#6B8A62' }}
-            />
-            <div>
-              <h1 className="font-display text-2xl font-bold text-warmgray-800 dark:text-gray-100">
-                {course.name}
-              </h1>
-              <p className="text-warmgray-500 dark:text-gray-400">
-                {course.credits} credit{course.credits !== 1 ? 's' : ''}
-                {course.description && ` • ${course.description}`}
-              </p>
+        {editingCourse ? (
+          // Edit Course Form
+          <div className="card">
+            <h3 className="font-semibold text-warmgray-800 dark:text-gray-100 mb-4">Edit Course</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="label">Course Name</label>
+                <input
+                  type="text"
+                  value={courseEdit.name}
+                  onChange={(e) => setCourseEdit(prev => ({ ...prev, name: e.target.value }))}
+                  className="input"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="label">Credits</label>
+                <input
+                  type="number"
+                  step="0.5"
+                  min="0"
+                  value={courseEdit.credits}
+                  onChange={(e) => setCourseEdit(prev => ({ ...prev, credits: e.target.value }))}
+                  className="input"
+                />
+              </div>
+
+              <div>
+                <label className="label">Description/Notes</label>
+                <input
+                  type="text"
+                  value={courseEdit.description}
+                  onChange={(e) => setCourseEdit(prev => ({ ...prev, description: e.target.value }))}
+                  className="input"
+                  placeholder="Optional course description"
+                />
+              </div>
+
+              <div>
+                <label className="label">Color</label>
+                <input
+                  type="color"
+                  value={courseEdit.color}
+                  onChange={(e) => setCourseEdit(prev => ({ ...prev, color: e.target.value }))}
+                  className="h-12 w-full rounded-xl border border-warmgray-200 dark:border-gray-600 cursor-pointer"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={handleCancelEditCourse}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateCourse}
+                  disabled={!courseEdit.name || !courseEdit.credits}
+                  className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Save Changes
+                </button>
+              </div>
             </div>
           </div>
+        ) : (
+          // Display Course Header
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div
+                className="w-3 h-12 rounded-full"
+                style={{ backgroundColor: course.color || '#6B8A62' }}
+              />
+              <div>
+                <h1 className="font-display text-2xl font-bold text-warmgray-800 dark:text-gray-100">
+                  {course.name}
+                </h1>
+                <p className="text-warmgray-500 dark:text-gray-400">
+                  {course.credits} credit{course.credits !== 1 ? 's' : ''}
+                  {course.description && ` • ${course.description}`}
+                </p>
+              </div>
+            </div>
 
-          {/* Current Grade and Menu */}
-          <div className="flex items-center gap-4 relative">
+            {/* Current Grade and Menu */}
+            <div className="flex items-center gap-4 relative">
             {course.letterGrade ? (
               <div className="text-right">
                 <div className="text-sm text-warmgray-500 dark:text-gray-400 mb-1">Current Grade</div>
@@ -199,6 +309,13 @@ export default function CourseView() {
                   />
                   <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-warm-lg border border-warmgray-100 dark:border-gray-700 py-1 z-20">
                     <button
+                      onClick={handleEditCourse}
+                      className="w-full px-4 py-2 text-left text-sm text-warmgray-700 dark:text-gray-300 hover:bg-warmgray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit Course
+                    </button>
+                    <button
                       onClick={() => {
                         setShowCourseMenu(false)
                         handleDeleteCourse()
@@ -214,6 +331,7 @@ export default function CourseView() {
             </div>
           </div>
         </div>
+        )}
       </div>
 
       {/* Attendance Override */}
