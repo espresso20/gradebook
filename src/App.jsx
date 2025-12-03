@@ -9,6 +9,7 @@ import CourseView from './pages/CourseView'
 import Attendance from './pages/Attendance'
 import Settings from './pages/Settings'
 import Help from './pages/Help'
+import Reports from './pages/Reports'
 
 function App() {
   const [students, setStudents] = useState([])
@@ -67,6 +68,7 @@ function App() {
             <Route path="/" element={<Welcome />} />
             <Route path="/settings" element={<Settings onUpdate={loadData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/reports" element={<Reports />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (
@@ -89,6 +91,7 @@ function App() {
               element={<Settings onUpdate={loadData} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
             />
             <Route path="/help" element={<Help />} />
+            <Route path="/reports" element={<Reports />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         )}

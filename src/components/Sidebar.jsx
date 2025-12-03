@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { GraduationCap, Plus, Settings, HelpCircle, Menu, X, BookOpen, ChevronDown } from 'lucide-react'
+import { GraduationCap, Plus, Settings, HelpCircle, Menu, X, BookOpen, ChevronDown, FileText } from 'lucide-react'
 import db from '../lib/store'
 import AddStudentModal from './AddStudentModal'
 
@@ -148,6 +148,21 @@ export default function Sidebar({ students, schoolYears, activeYear, onUpdate })
 
         {/* Bottom Buttons */}
         <div className="p-4 border-t border-warmgray-200 dark:border-gray-700 space-y-2">
+          <Link
+            to="/reports"
+            onClick={() => setIsMobileOpen(false)}
+            className={`
+              flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+              ${location.pathname === '/reports'
+                ? 'bg-terracotta-100 dark:bg-terracotta-900/30 text-terracotta-700 dark:text-terracotta-400'
+                : 'text-warmgray-700 dark:text-gray-300 hover:bg-warmgray-100 dark:hover:bg-gray-800'
+              }
+            `}
+          >
+            <FileText className="w-4 h-4" />
+            Reports
+          </Link>
+
           <Link
             to="/settings"
             onClick={() => setIsMobileOpen(false)}

@@ -88,3 +88,54 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-warmgray-400 dark:bg-gray-500;
 }
+
+/* Print Styles for Reports */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .report-container {
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .report-table {
+    page-break-inside: avoid;
+  }
+
+  .report-table thead {
+    display: table-header-group;
+  }
+
+  .report-table tr {
+    page-break-inside: avoid;
+  }
+
+  /* Force black text for print */
+  h1, h2, h3, h4, h5, h6, p, td, th, span, div {
+    color: black !important;
+  }
+
+  /* Ensure borders show in print */
+  table, th, td {
+    border-color: #000 !important;
+  }
+
+  /* Hide shadows and backgrounds for print */
+  * {
+    box-shadow: none !important;
+  }
+}
