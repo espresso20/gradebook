@@ -1,0 +1,37 @@
+## Gradebook App - TODO List
+
+### Core Functions
+- [*] `addStudent(name, studentId)` - Add new student to gradebook
+- [*] `removeStudent(studentId)` - Remove student from system
+- [*] `addGrade(studentId, assignmentId, score)` - Record grade for assignment
+- [*] `updateGrade(studentId, assignmentId, newScore)` - Modify existing grade
+- [*] `calculateAverage(studentId)` - Compute overall GPA
+- [*] `getStudentGrades(studentId)` - Retrieve all grades for a student
+- [ ] Add Pass/Fail button in a course for a optional course that is not normally graded by standard constraints, such as Theater/Performing arts. Pass fail is either 100%/0%
+
+### Assignment Management
+- [ ] `createAssignment(name, maxScore, dueDate)` - Create new assignment
+- [ ] `deleteAssignment(assignmentId)` - Remove assignment
+- [ ] `getAssignmentStats(assignmentId)` - Get class average, min, max for assignment
+
+### Extra Curricular Activities
+- [ ] build new add button for "Extra Curricular Activities" or something like that
+
+### Reporting
+- [ ] `generateTranscript(studentId)` - Create student transcript
+- [ ] `classReport()` - Summary statistics for entire class
+- [ ] `exportGrades(format)` - Export data to CSV/JSON
+
+### Data Management
+- [ ] `displayStudentList()` - Show all students
+- [ ] `loadGradesFromFile(path)` - Import existing data
+- [ ] `saveGradebook(path)` - Persist data to file
+
+### Cloud Features
+- [ ] Auto-save to cloud
+- [ ] Upload and attach course documents and images
+- [ ] Store supplemental materials
+
+
+### Bug Fixes
+- [ ] Attendance shows the proper months when clicking, but the attendance cards in the students profile shows the months of attendance pushed BACK one month. Example. Attendance was selected from September to December. the Display Card shows August to November
