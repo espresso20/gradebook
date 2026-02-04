@@ -62,11 +62,6 @@
       "dist/**/*",
       "electron/**/*"
     ],
-    "publish": {
-      "provider": "github",
-      "owner": "espresso20",
-      "repo": "gradebook"
-    },
     "mac": {
       "category": "public.app-category.education",
       "icon": "build/icon.icns",
