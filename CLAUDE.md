@@ -1,13 +1,13 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working with this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
 **Family Gradebook** - An Electron desktop application for homeschool families to track students, courses, grades, and attendance.
 
 - **Type**: Electron + React + Vite desktop app
-- **Version**: 1.0.6
+- **Version**: 1.0.9
 - **Repository**: https://github.com/espresso20/gradebook
 - **Primary Maintainer**: Adam Roffler (espresso20)
 
@@ -30,30 +30,63 @@ This file provides guidance to Claude Code when working with this repository.
 - **Node.js 16+** required
 - **npm 7+** for package management
 
+## Application Architecture
+
+### Data Flow
+- **State Management**: React useState/useEffect at App.jsx root level
+- **Data Store**: `src/lib/store.js` - localStorage-based persistence layer
+- **Grade Calculations**: `src/lib/database.js` - weighted averages, GPA, letter grades
+- **Routing**: React Router with conditional rendering based on student existence
+
+### Key Architectural Patterns
+
+**1. Conditional App Flow**
+The app has two distinct states managed in `App.jsx`:
+- **No Students**: Shows Welcome page, limits navigation
+- **Has Students**: Full app with Dashboard, profiles, courses, attendance
+
+**2. Data Persistence**
+- All data stored in browser localStorage with `gradebook_` prefix
+- Keys: `students`, `school_years`, `courses`, `grades`, `attendance`, `settings`
+- Export/import as JSON for backups
+- No backend or database - fully offline
+
+**3. Grade Calculation System**
+- **Categories**: Tests, Quizzes, Homework with custom weights
+- **Weighted Grades**: Each category averaged, then weighted by percentage
+- **Attendance Impact**: Optional 33% contribution to final grade (configurable per course)
+- **Letter Grades**: Two grading scales (simple A-F or advanced A+/A/A-)
+- **GPA**: Calculated from letter grades × credit hours
+
+**4. School Year Management**
+- Multiple school years with start/end dates
+- One active year at a time
+- Historical data preserved when creating new years
+- Year switching affects all views and reports
+
 ## Project Structure
 
 ```
 gradebook/
-├── electron/              # Electron main process code
-│   ├── main.cjs          # Main process entry (auto-updater configured here)
-│   ├── preload.cjs       # Preload scripts
-│   └── package.json      # Electron-specific config
-├── src/                  # React application source
-│   ├── components/       # React components
-│   ├── version.js        # Auto-generated version file
-│   └── ...
-├── dist/                 # Vite build output (web assets)
-├── dist-electron/        # electron-builder output (installers)
-├── scripts/              # Build and release automation scripts
-│   ├── release.js        # Automated release workflow
-│   ├── test-build.js     # Pre-release build testing
-│   ├── version.js        # Version bumping
-│   └── generate-version.js # Generate src/version.js
-├── .github/workflows/    # CI/CD workflows
-│   └── release.yml       # Automated builds on git tags
-├── package.json          # Project config and dependencies
-├── CHANGELOG.md          # Release notes following Keep a Changelog
-└── README.md             # User and developer documentation
+├── electron/              # Electron main process
+│   ├── main.cjs          # Main process entry, auto-updater config
+│   └── preload.cjs       # IPC bridge
+├── src/
+│   ├── App.jsx           # Root component, routing, state management
+│   ├── main.jsx          # React entry point
+│   ├── pages/            # Route components (Dashboard, StudentProfile, etc.)
+│   ├── components/       # Reusable UI (Layout, Sidebar, Modals)
+│   ├── lib/
+│   │   ├── store.js      # localStorage abstraction layer
+│   │   └── database.js   # Grade calculation logic
+│   └── version.js        # Auto-generated (DO NOT EDIT)
+├── scripts/              # Automation
+│   ├── release.js        # Full release workflow
+│   ├── test-build.js     # Pre-release validation
+│   ├── version.js        # Semver bumping
+│   └── generate-version.js # Creates src/version.js
+└── .github/workflows/
+    └── release.yml       # CI/CD for multi-platform builds
 ```
 
 ## Development Workflow
@@ -230,25 +263,31 @@ npm run release:major   # Breaking changes (1.0.6 → 2.0.0)
 
 ### Data Storage
 
-- All user data stored locally (no backend)
-- Uses browser localStorage
-- Data export/import via JSON files
-- Location: Electron user data directory
+- **Storage**: Browser localStorage (keys prefixed with `gradebook_`)
+- **Location**: Electron user data directory
+- **Persistence**: `src/lib/store.js` manages all CRUD operations
+- **Export/Import**: JSON format for full backup/restore
+- **No Backend**: Completely offline, privacy-focused
 
 ### Common Issues
 
-**Build Fails**:
-- Check Node.js version (16+ required)
-- Clear node_modules and reinstall: `rm -rf node_modules && npm install`
-- Clear build cache: `npm run clean`
+**Build Fails with "Could not resolve ../version"**:
+- Missing `src/version.js` - run `npm run generate:version` before building
+- All `electron:build:*` commands now include this step automatically
+
+**CI Build Fails with 403 Forbidden**:
+- GitHub Actions needs `permissions: contents: write` in workflow
+- Already fixed in `.github/workflows/release.yml`
 
 **Auto-Updater Not Working**:
 - Only works in production builds (not dev mode)
 - Requires valid GitHub Release with proper semver tag
-- Check electron/main.cjs has correct repository config
+- Check `electron/main.cjs` has correct repository config (espresso20/gradebook)
 
-**Version Mismatch**:
-- Run `npm run generate:version` to sync src/version.js with package.json
+**GitHub Actions Transient Failures**:
+- Node.js download timeouts occasionally happen
+- Use "Re-run failed jobs" button in GitHub Actions UI
+- Not a code issue - infrastructure hiccup
 
 ## Best Practices
 
@@ -265,10 +304,12 @@ npm run release:major   # Breaking changes (1.0.6 → 2.0.0)
 - [ ] README reflects any new features/changes
 
 ### Code Style
-- Uses Tailwind for styling (no custom CSS files)
-- React functional components with hooks
-- ES modules (import/export, not require)
-- CommonJS for Electron main process (.cjs files)
+- **Styling**: Tailwind CSS only (no custom CSS files except index.css)
+- **React**: Functional components with hooks, no class components
+- **Modules**: ES modules (import/export) in React code
+- **Electron**: CommonJS (.cjs) for main process and preload scripts
+- **State**: Prop drilling from App.jsx root (no Redux/Context)
+- **Colors**: Custom Tailwind theme with terracotta, sage, gold, cream palette
 
 ## Useful Commands
 
