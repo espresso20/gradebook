@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.0.12] - 2026-02-04
+
+### Fixed
+- macOS app corruption by eliminating artifact system in CI/CD workflow
+- GitHub Actions now uploads build artifacts directly to releases without intermediate storage
+- This preserves the macOS .app bundle structure and prevents "damaged" errors
+
+
 ## [1.0.11] - 2026-02-04
 
 ### Fixed
