@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.10] - 2026-02-04
+
+### Fixed
+- macOS app corruption causing "damaged" errors on download
+- Removed duplicate publishing that was corrupting app bundle structure
+- electron-builder now only builds, GitHub Actions handles all uploads
+
+### Added
+- ICON_GUIDE.md with instructions for adding custom app icons
+
+### Changed
+- Workflow now uses single upload path to preserve app integrity
+- Improved CLAUDE.md with detailed architecture documentation
+
 ## [1.0.9] - 2026-02-04
 
 ### Fixed
