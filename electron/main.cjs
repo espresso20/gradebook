@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const path = require('path')
 
 let mainWindow = null
@@ -51,9 +52,62 @@ function createWindow() {
   })
 }
 
+// Auto-updater configuration
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
+
+// Auto-updater event handlers
+autoUpdater.on('checking-for-update', () => {
+  console.log('Checking for updates...')
+})
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Update available:', info.version)
+  if (mainWindow) {
+    mainWindow.webContents.send('update-available', info)
+  }
+})
+
+autoUpdater.on('update-not-available', () => {
+  console.log('App is up to date')
+})
+
+autoUpdater.on('error', (err) => {
+  console.error('Update error:', err)
+})
+
+autoUpdater.on('download-progress', (progressObj) => {
+  if (mainWindow) {
+    mainWindow.webContents.send('download-progress', progressObj)
+  }
+})
+
+autoUpdater.on('update-downloaded', () => {
+  console.log('Update downloaded')
+  if (mainWindow) {
+    mainWindow.webContents.send('update-downloaded')
+  }
+})
+
+// IPC handlers for update actions
+ipcMain.on('download-update', () => {
+  autoUpdater.downloadUpdate()
+})
+
+ipcMain.on('install-update', () => {
+  autoUpdater.quitAndInstall()
+})
+
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
   createWindow()
+
+  // Check for updates after app is ready (only in production)
+  if (app.isPackaged) {
+    setTimeout(() => {
+      autoUpdater.checkForUpdates()
+    }, 3000) // Wait 3 seconds after launch
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

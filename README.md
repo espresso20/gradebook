@@ -2,9 +2,10 @@
 
 A beautiful, warm, and approachable gradebook application designed specifically for homeschool families. Track your children's academic progress, manage courses, grades, and attendance all in one elegant desktop application.
 
-![Family Gradebook](https://img.shields.io/badge/version-1.0.0-terracotta)
+![Family Gradebook](https://img.shields.io/badge/version-1.0.6-terracotta)
 ![License](https://img.shields.io/badge/license-MIT-sage)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-blue)
+![Auto Updates](https://img.shields.io/badge/auto--updates-enabled-brightgreen)
 
 ## ✨ Features
 
@@ -56,8 +57,49 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 - **Local Storage**: All data stored locally on your computer for privacy
 - **No Internet Required**: Works completely offline
 - **Secure**: Your data never leaves your device
+- **Auto-Updates**: Automatically checks for and installs new versions
 
-## 🚀 Quick Start
+## 📥 Download
+
+**For End Users** - Just want to use the app? Download the latest release for your platform:
+
+### [⬇️ Download Latest Release](https://github.com/espresso20/gradebook/releases/latest)
+
+**Available for:**
+- **macOS** - Download the `.dmg` file
+- **Windows** - Download the `.exe` installer
+- **Linux** - Download the `.AppImage` file
+
+### Installation
+
+#### macOS
+1. Download `Family-Gradebook-X.X.X.dmg`
+2. Open the .dmg file
+3. Drag Family Gradebook to your Applications folder
+4. If you see "unidentified developer" warning:
+   - Right-click the app → Open → Open
+
+#### Windows
+1. Download `Family-Gradebook-Setup-X.X.X.exe`
+2. Run the installer
+3. Follow the installation wizard
+4. Launch from Start Menu or Desktop shortcut
+
+#### Linux
+1. Download `Family-Gradebook-X.X.X.AppImage`
+2. Make it executable: `chmod +x Family-Gradebook-X.X.X.AppImage`
+3. Double-click to run or execute from terminal
+
+### Auto-Updates
+
+The app will automatically check for updates when you launch it. When a new version is available:
+- You'll see a notification in the app
+- Click "Download Update" to get the latest version
+- Updates install automatically on next restart
+
+---
+
+## 🚀 Quick Start for Developers
 
 ### Prerequisites
 
@@ -368,6 +410,68 @@ Contributions are welcome! Please follow these steps:
 - Update README if adding new features
 - Add comments for complex logic
 - Test data export/import after changes to data structure
+
+## 🚢 Release Process (For Maintainers)
+
+This project uses automated releases with GitHub Actions and semantic versioning.
+
+### Creating a New Release
+
+1. **Make sure all changes are committed**
+   ```bash
+   git status
+   ```
+
+2. **Run the release script**
+   ```bash
+   # Patch release (1.0.6 → 1.0.7)
+   npm run release:patch
+
+   # Minor release (1.0.6 → 1.1.0)
+   npm run release:minor
+
+   # Major release (1.0.6 → 2.0.0)
+   npm run release:major
+   ```
+
+3. **What happens automatically:**
+   - Version number is bumped in `package.json`
+   - `CHANGELOG.md` is updated with a new entry
+   - You'll be prompted to edit the changelog
+   - Git commit is created
+   - Git tag is created (e.g., `v1.0.7`)
+   - Changes and tag are pushed to GitHub
+   - GitHub Actions builds Mac/Windows/Linux binaries
+   - GitHub Release is created with all binaries attached
+   - Users with the app installed will be notified of the update
+
+4. **Monitor the build**
+   - Check [GitHub Actions](https://github.com/espresso20/gradebook/actions)
+   - Builds typically complete in 10-15 minutes
+   - Once complete, the release will appear in [Releases](https://github.com/espresso20/gradebook/releases)
+
+### Manual Version Bump (Without Release)
+
+If you just want to update the version without creating a release:
+
+```bash
+npm run version:patch  # or :minor or :major
+npm run generate:version
+```
+
+### Release Checklist
+
+Before running the release script:
+- [ ] All features/fixes are tested
+- [ ] README is up to date
+- [ ] No uncommitted changes
+- [ ] All tests pass (if applicable)
+- [ ] Build succeeds locally
+
+After the release:
+- [ ] Verify GitHub Actions completed successfully
+- [ ] Test download and installation on at least one platform
+- [ ] Verify auto-update works for existing installations
 
 ## 📄 License
 
