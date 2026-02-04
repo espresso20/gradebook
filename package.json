@@ -1,6 +1,6 @@
 {
   "name": "gradebook-app",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A warm and approachable gradebook for homeschool families",
   "author": "Family Gradebook",
   "type": "module",
@@ -70,7 +70,10 @@
     "mac": {
       "category": "public.app-category.education",
       "icon": "build/icon.icns",
-      "target": ["dmg", "zip"]
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "win": {
       "target": "nsis",
