@@ -1,6 +1,6 @@
 {
   "name": "gradebook-app",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "A warm and approachable gradebook for homeschool families",
   "author": "Family Gradebook",
   "type": "module",

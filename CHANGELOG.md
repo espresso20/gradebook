@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.11] - 2026-02-04
+
+### Fixed
+- CI build failure due to electron-builder attempting to publish
+- Added `--publish never` flag to all build commands
+
 ## [1.0.10] - 2026-02-04
 
 ### Fixed
