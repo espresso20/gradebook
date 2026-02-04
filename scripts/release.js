@@ -3,6 +3,12 @@
 /**
  * Release Script
  * Automates the release process: version bump, changelog, git tag, and push
+ *
+ * Usage:
+ *   npm run release:patch          # Create a patch release
+ *   npm run release:minor          # Create a minor release
+ *   npm run release:major          # Create a major release
+ *   npm run release -- --dry-run   # Test without pushing
  */
 
 import { execSync } from 'child_process'
@@ -16,11 +22,34 @@ const __dirname = dirname(__filename)
 const packagePath = join(__dirname, '../package.json')
 const changelogPath = join(__dirname, '../CHANGELOG.md')
 
-function exec(command) {
+// Parse command line arguments
+const args = process.argv.slice(2)
+const isDryRun = args.includes('--dry-run')
+const versionType = args.find(arg => ['major', 'minor', 'patch'].includes(arg)) || 'patch'
+
+const colors = {
+  reset: '\x1b[0m',
+  cyan: '\x1b[36m',
+  yellow: '\x1b[33m',
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  blue: '\x1b[34m',
+}
+
+function log(message, color = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`)
+}
+
+function exec(command, options = {}) {
+  if (isDryRun && options.skipInDryRun) {
+    log(`   [DRY RUN] Would execute: ${command}`, 'cyan')
+    return ''
+  }
+
   try {
     return execSync(command, { encoding: 'utf8', stdio: 'inherit' })
   } catch (error) {
-    console.error(`❌ Command failed: ${command}`)
+    log(`❌ Command failed: ${command}`, 'red')
     process.exit(1)
   }
 }
@@ -30,7 +59,7 @@ function getVersion() {
   return packageJson.version
 }
 
-function updateChangelog(version) {
+function updateChangelog(version, skipEdit = false) {
   const date = new Date().toISOString().split('T')[0]
   const newEntry = `\n## [${version}] - ${date}\n\n### Added\n- \n\n### Changed\n- \n\n### Fixed\n- \n\n`
 
@@ -51,70 +80,108 @@ function updateChangelog(version) {
     writeFileSync(changelogPath, lines.join('\n'))
   }
 
-  console.log(`✅ Updated CHANGELOG.md for version ${version}`)
-  console.log(`📝 Please edit CHANGELOG.md to add release notes before continuing.`)
-  console.log(`\nPress Enter to continue or Ctrl+C to cancel...`)
+  log(`✅ Updated CHANGELOG.md for version ${version}`, 'green')
 
-  // Wait for user input
-  execSync('read', { stdio: 'inherit', shell: '/bin/bash' })
+  if (!skipEdit) {
+    log(`📝 Please edit CHANGELOG.md to add release notes before continuing.`, 'yellow')
+    log(`\nPress Enter to continue or Ctrl+C to cancel...`, 'blue')
+
+    // Wait for user input
+    execSync('read', { stdio: 'inherit', shell: '/bin/bash' })
+  }
 }
 
 function release() {
-  // Get version type from command line
-  const versionType = process.argv[2] || 'patch'
-
   if (!['major', 'minor', 'patch'].includes(versionType)) {
-    console.error('❌ Invalid version type. Use: major, minor, or patch')
-    console.error('   Example: npm run release patch')
+    log('❌ Invalid version type. Use: major, minor, or patch', 'red')
+    log('   Example: npm run release patch', 'yellow')
+    log('   Or: npm run release:patch -- --dry-run', 'yellow')
     process.exit(1)
   }
 
-  console.log(`\n🚀 Starting ${versionType} release...\n`)
+  log('\n' + '='.repeat(60), 'cyan')
+  if (isDryRun) {
+    log('🧪 DRY RUN MODE - No changes will be pushed to git', 'yellow')
+  }
+  log(`🚀 Starting ${versionType} release...`, 'cyan')
+  log('='.repeat(60) + '\n', 'cyan')
 
   // 1. Check for uncommitted changes
-  try {
-    const status = execSync('git status --porcelain', { encoding: 'utf8' })
-    if (status) {
-      console.error('❌ You have uncommitted changes. Please commit or stash them first.')
+  if (!isDryRun) {
+    try {
+      const status = execSync('git status --porcelain', { encoding: 'utf8' })
+      if (status) {
+        log('❌ You have uncommitted changes. Please commit or stash them first.', 'red')
+        process.exit(1)
+      }
+    } catch (error) {
+      log('❌ Failed to check git status', 'red')
       process.exit(1)
     }
-  } catch (error) {
-    console.error('❌ Failed to check git status')
-    process.exit(1)
   }
 
+  const oldVersion = getVersion()
+
   // 2. Bump version
-  console.log(`📦 Bumping ${versionType} version...`)
+  log(`📦 Bumping ${versionType} version...`, 'yellow')
   exec(`node ${join(__dirname, 'version.js')} ${versionType}`)
 
   // 3. Get new version
   const newVersion = getVersion()
+  log(`   ${oldVersion} → ${newVersion}`, 'green')
 
   // 4. Generate version file
-  console.log('📝 Generating version file...')
+  log('\n📝 Generating version file...', 'yellow')
   exec(`node ${join(__dirname, 'generate-version.js')}`)
 
   // 5. Update changelog
-  console.log('📋 Updating changelog...')
-  updateChangelog(newVersion)
+  log('\n📋 Updating changelog...', 'yellow')
+  updateChangelog(newVersion, isDryRun)
+
+  if (isDryRun) {
+    log('\n' + '='.repeat(60), 'cyan')
+    log('🧪 DRY RUN COMPLETE', 'yellow')
+    log('='.repeat(60), 'cyan')
+    log('\n✅ Version bumped and changelog updated locally', 'green')
+    log(`   New version: ${newVersion}`, 'green')
+    log('\n📝 Review the changes:', 'blue')
+    log('   - Check package.json for new version', 'blue')
+    log('   - Check CHANGELOG.md for new entry', 'blue')
+    log('   - Check src/version.js for generated version', 'blue')
+    log('\n⚠️  Git commands that would have run:', 'yellow')
+    log('   git add .', 'cyan')
+    log(`   git commit -m "chore: release v${newVersion}"`, 'cyan')
+    log(`   git tag -a v${newVersion} -m "Release v${newVersion}"`, 'cyan')
+    log('   git push', 'cyan')
+    log('   git push --tags', 'cyan')
+    log('\n🔄 To undo these local changes:', 'blue')
+    log('   git restore package.json CHANGELOG.md src/version.js', 'blue')
+    log('\n🚀 To actually release:', 'blue')
+    log(`   npm run release:${versionType}`, 'blue')
+    log('')
+    return
+  }
 
   // 6. Git commit
-  console.log('💾 Creating git commit...')
-  exec('git add .')
-  exec(`git commit -m "chore: release v${newVersion}"`)
+  log('\n💾 Creating git commit...', 'yellow')
+  exec('git add .', { skipInDryRun: true })
+  exec(`git commit -m "chore: release v${newVersion}"`, { skipInDryRun: true })
 
   // 7. Create git tag
-  console.log('🏷️  Creating git tag...')
-  exec(`git tag -a v${newVersion} -m "Release v${newVersion}"`)
+  log('🏷️  Creating git tag...', 'yellow')
+  exec(`git tag -a v${newVersion} -m "Release v${newVersion}"`, { skipInDryRun: true })
 
   // 8. Push to remote
-  console.log('🚢 Pushing to remote...')
-  exec('git push')
-  exec('git push --tags')
+  log('🚢 Pushing to remote...', 'yellow')
+  exec('git push', { skipInDryRun: true })
+  exec('git push --tags', { skipInDryRun: true })
 
-  console.log(`\n✅ Release v${newVersion} complete!`)
-  console.log(`\n📦 GitHub Actions will now build and publish the release.`)
-  console.log(`   Check: https://github.com/espresso20/gradebook/actions`)
+  log('\n' + '='.repeat(60), 'cyan')
+  log(`✅ Release v${newVersion} complete!`, 'green')
+  log('='.repeat(60), 'cyan')
+  log(`\n📦 GitHub Actions will now build and publish the release.`, 'blue')
+  log(`   Check: https://github.com/espresso20/gradebook/actions`, 'blue')
+  log('')
 }
 
 release()
