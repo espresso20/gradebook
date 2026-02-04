@@ -2,7 +2,7 @@
 
 A beautiful, warm, and approachable gradebook application designed specifically for homeschool families. Track your children's academic progress, manage courses, grades, and attendance all in one elegant desktop application.
 
-![Family Gradebook](https://img.shields.io/badge/version-1.0.6-terracotta)
+![Family Gradebook](https://img.shields.io/badge/version-1.0.12-terracotta)
 ![License](https://img.shields.io/badge/license-MIT-sage)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-blue)
 ![Auto Updates](https://img.shields.io/badge/auto--updates-enabled-brightgreen)
@@ -72,23 +72,24 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 
 ### Installation
 
+**Important:** macOS users will need to follow additional steps to bypass Gatekeeper security warnings. See [INSTALLATION.md](INSTALLATION.md) for detailed instructions.
+
 #### macOS
-1. Download `Family-Gradebook-X.X.X.dmg`
-2. Open the .dmg file
-3. Drag Family Gradebook to your Applications folder
-4. If you see "unidentified developer" warning:
-   - Right-click the app → Open → Open
+1. Download the `.dmg` file from the latest release
+2. Open the .dmg file and drag to Applications
+3. **Right-click** the app and select "Open" (important - see [INSTALLATION.md](INSTALLATION.md))
 
 #### Windows
-1. Download `Family-Gradebook-Setup-X.X.X.exe`
-2. Run the installer
-3. Follow the installation wizard
-4. Launch from Start Menu or Desktop shortcut
+1. Download the `.exe` installer
+2. Run the installer and follow the wizard
+3. If SmartScreen appears, click "More info" then "Run anyway"
 
 #### Linux
-1. Download `Family-Gradebook-X.X.X.AppImage`
-2. Make it executable: `chmod +x Family-Gradebook-X.X.X.AppImage`
-3. Double-click to run or execute from terminal
+1. Download the `.AppImage` file
+2. Make it executable: `chmod +x Family.Gradebook-*.AppImage`
+3. Run it: `./Family.Gradebook-*.AppImage`
+
+**Need help?** See the full [Installation Guide](INSTALLATION.md) for troubleshooting and detailed instructions.
 
 ### Auto-Updates
 
