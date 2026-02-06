@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.14] - 2026-02-06
+
+### Fixed
+- **CRITICAL**: Fixed "damaged" error on ARM Macs by building universal binaries
+- Root cause: GitHub Actions uses Intel runners that create HFS+ DMGs, but ARM64 Macs expect APFS
+- Solution: Build universal binaries that work on both Intel and ARM Macs
+- Primary distribution format changed to ZIP (more reliable for unsigned apps)
+
+### Changed
+- macOS builds are now universal (Intel + ARM) instead of ARM64-only
+- ZIP is now the primary download format (DMG still available)
+- Added explicit `identity: null` to prevent signing attempts
+
 ## [1.0.13] - 2026-02-04
 
 ### Fixed

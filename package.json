@@ -1,6 +1,6 @@
 {
   "name": "gradebook-app",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A warm and approachable gradebook for homeschool families",
   "author": "Family Gradebook",
   "type": "module",
@@ -71,9 +71,16 @@
       "category": "public.app-category.education",
       "icon": "build/icon.icns",
       "target": [
-        "dmg",
-        "zip"
-      ]
+        {
+          "target": "zip",
+          "arch": ["universal"]
+        },
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ],
+      "identity": null
     },
     "win": {
       "target": "nsis",
