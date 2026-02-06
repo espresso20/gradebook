@@ -2,7 +2,7 @@
 
 A beautiful, warm, and approachable gradebook application designed specifically for homeschool families. Track your children's academic progress, manage courses, grades, and attendance all in one elegant desktop application.
 
-![Family Gradebook](https://img.shields.io/badge/version-1.0.12-terracotta)
+![Family Gradebook](https://img.shields.io/badge/version-1.0.14-terracotta)
 ![License](https://img.shields.io/badge/license-MIT-sage)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-blue)
 ![Auto Updates](https://img.shields.io/badge/auto--updates-enabled-brightgreen)
@@ -66,7 +66,7 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 ### [⬇️ Download Latest Release](https://github.com/espresso20/gradebook/releases/latest)
 
 **Available for:**
-- **macOS** - Download the `.dmg` file
+- **macOS** - Download the `.zip` file (recommended) or `.dmg`
 - **Windows** - Download the `.exe` installer
 - **Linux** - Download the `.AppImage` file
 
@@ -75,9 +75,12 @@ A beautiful, warm, and approachable gradebook application designed specifically 
 **Important:** macOS users will need to follow additional steps to bypass Gatekeeper security warnings. See [INSTALLATION.md](INSTALLATION.md) for detailed instructions.
 
 #### macOS
-1. Download the `.dmg` file from the latest release
-2. Open the .dmg file and drag to Applications
-3. **Right-click** the app and select "Open" (important - see [INSTALLATION.md](INSTALLATION.md))
+1. Download the `*-universal-mac.zip` file from the latest release
+2. Extract the ZIP and drag "Family Gradebook" to Applications
+3. Go to System Settings → Privacy & Security → Click "Open Anyway"
+4. **Or** right-click the app and select "Open"
+
+**Alternative:** `.dmg` file is also available but may show additional warnings.
 
 #### Windows
 1. Download the `.exe` installer
