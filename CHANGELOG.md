@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.13] - 2026-02-04
+
+### Fixed
+- **CRITICAL**: Fixed app corruption in CI builds by switching to electron-builder's native publishing
+- Root cause: softprops/action-gh-release has known bug corrupting macOS .app bundles (issue #153)
+- Solution: Use electron-builder's built-in GitHub publishing instead of manual uploads
+- All platform builds now use electron-builder's native upload mechanism
+- This properly handles .app bundle directory structures and prevents corruption
+
+### Changed
+- Removed manual GitHub Actions upload steps entirely
+- electron-builder now handles all release creation and file uploads
+- Simplified CI/CD workflow significantly
+
 ## [1.0.12] - 2026-02-04
 
 ### Fixed

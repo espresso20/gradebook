@@ -1,6 +1,6 @@
 {
   "name": "gradebook-app",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "A warm and approachable gradebook for homeschool families",
   "author": "Family Gradebook",
   "type": "module",
@@ -26,10 +26,10 @@
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
     "release:dry-run": "node scripts/release.js patch --dry-run",
-    "electron:build": "npm run clean && npm run generate:version && vite build && npx electron-builder --publish never",
-    "electron:build:mac": "npm run clean && npm run generate:version && vite build && npx electron-builder --mac --publish never",
-    "electron:build:win": "npm run clean && npm run generate:version && vite build && npx electron-builder --win --publish never",
-    "electron:build:linux": "npm run clean && npm run generate:version && vite build && npx electron-builder --linux --publish never"
+    "electron:build": "npm run clean && npm run generate:version && vite build && npx electron-builder",
+    "electron:build:mac": "npm run clean && npm run generate:version && vite build && npx electron-builder --mac",
+    "electron:build:win": "npm run clean && npm run generate:version && vite build && npx electron-builder --win",
+    "electron:build:linux": "npm run clean && npm run generate:version && vite build && npx electron-builder --linux"
   },
   "dependencies": {
     "date-fns": "^2.30.0",
@@ -62,6 +62,11 @@
       "dist/**/*",
       "electron/**/*"
     ],
+    "publish": {
+      "provider": "github",
+      "owner": "espresso20",
+      "repo": "gradebook"
+    },
     "mac": {
       "category": "public.app-category.education",
       "icon": "build/icon.icns",
